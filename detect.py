@@ -127,6 +127,17 @@ def detect(save_img=False):
                     if save_img or view_img:  # Add bbox to image
                         label = f'{names[int(cls)]} {conf:.2f}'
                         plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=1)
+                bbox_list = []
+                for i, (bboxes, cls) in enumerate(zip(det, classes)):
+                    # If there are no detections, skip to the next frame
+                    if bboxes is None or len(bboxes) == 0:
+                        continue
+
+                    # Print the bounding box coordinates for each detected object
+                    for bbox in bboxes:
+                        x1, y1, x2, y2 = bbox[:4]
+                        bbox_list.append((path, i, cls, x1, y1, x2, y2))
+                        print(f"Frame: {i}, Class: {cls}, Bounding box: ({x1}, {y1}), ({x2}, {y2})")
 
             # Print time (inference + NMS)
             print(f'{s}Done. ({(1E3 * (t2 - t1)):.1f}ms) Inference, ({(1E3 * (t3 - t2)):.1f}ms) NMS')
